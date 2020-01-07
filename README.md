@@ -4,10 +4,8 @@
 
 _Note_: The MEAN app's source is [here](https://github.com/SinghDigamber/mean-stack-angular-7-crud-app-example). I simply changed it a bit to suit the purpose of this demo.
 
-1. Prerequisite: NodeJS v10
+Start cluster and app
 
-2. Start cluster and app
-
-   ```Bash
-   bash start-app.sh mean
-   ```
+```Bash
+bash start-app.sh mean
+```

@@ -32,16 +32,15 @@ deploy_app() {
 }
 
 test() {
-    echo "Deploying should take around 60s..."
-    sleep 60s
-    echo "Access site via localhost:4000"
-    kubectl port-forward deployment/meanapp 4000:4000
+    echo "Wait for 2 containers to change status to RUNNING. Then run following snippet in another terminal"
+    echo "kubectl port-forward deployment/meanapp 4000:4000"
+    echo "Then access test site at http://localhost:4000 via browser"
+    kubectl get --watch pods -o wide
 }
 
 main() {
     prepare_bin
     create_cluster
-    dockerize_app
     deploy_app
     test
 }
