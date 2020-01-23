@@ -2,23 +2,7 @@
 
 # Start kind cluster and deploy a MEAN stack app
 ROOT_DIR="$(pwd)"
-
-prepare_bin() {
-    which kubectl && return
-    ## Install kubectl
-    curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64/kubectl"
-    chmod +x ./kubectl
-    sudo mv ./kubectl /usr/local/bin/kubectl
-    kubectl version
-
-    which kind && return
-    ## Install kind
-    brew install kind
-}
-
-create_cluster() {
-    bash "$ROOT_DIR/kind/cluster-creation/create-cluster.sh";    
-}
+APP="$1"
 
 dockerize_app() {
     which ng || npm install -g @angular/cli
@@ -28,19 +12,25 @@ dockerize_app() {
 }
 
 deploy_app() {
-    kubectl apply -f "$ROOT_DIR/kind/app-deployment/mean"
+    kubectl apply -f "$ROOT_DIR/kind/app-deployment/$APP"
 }
 
 test() {
-    echo "Wait for 2 containers to change status to RUNNING. Then run following snippet in another terminal"
-    echo "kubectl port-forward deployment/meanapp 4000:4000"
-    echo "Then access test site at http://localhost:4000 via browser"
+    echo "Wait for 2 containers to change status to RUNNING. Then run following command in another terminal"
+    case $APP in
+        mean)
+            echo "kubectl port-forward deployment/meanapp 4000:4000"
+            echo "Then access test site at http://localhost:4000 via browser"
+            ;;
+        lamp)
+            echo "kubectl port-forward deployment/lampapp 8080:80"
+            echo "Then access test site at http://localhost:8080 via browser"
+            ;;
+    esac    
     kubectl get --watch pods -o wide
 }
 
 main() {
-    prepare_bin
-    create_cluster
     deploy_app
     test
 }
