@@ -2,6 +2,7 @@
 
 # Start kind cluster and deploy a MEAN stack app
 ROOT_DIR="$(pwd)"
+export KUBECONFIG="$(kind get kubeconfig-path --name onenode)"
 APP="$1"
 
 dockerize_app() {
@@ -19,11 +20,11 @@ test() {
     echo "Wait for 2 containers to change status to RUNNING. Then run following command in another terminal"
     case $APP in
         mean)
-            echo "kubectl port-forward deployment/meanapp 4000:4000"
+            echo "KUBECONFIG=\"\$(kind get kubeconfig-path --name onenode)\" kubectl port-forward deployment/meanapp 4000:4000"
             echo "Then access test site at http://localhost:4000 via browser"
             ;;
         lamp)
-            echo "kubectl port-forward deployment/lampapp 8080:80"
+            echo "KUBECONFIG=\"\$(kind get kubeconfig-path --name onenode)\" kubectl port-forward deployment/lampapp 8080:80"
             echo "Then access test site at http://localhost:8080 via browser"
             ;;
     esac    
